@@ -1,0 +1,9 @@
+*** Constant pool ***
+0: ola 
+1: maria
+*** Instructions ***
+0: sconst 0
+1: sconst 1
+2: sconcat
+3: sprint
+4: halt

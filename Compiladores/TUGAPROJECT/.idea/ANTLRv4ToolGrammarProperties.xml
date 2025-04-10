@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ANTLRv4ToolGrammarProperties">
+    <option name="perGrammarGenerationSettings">
+      <list>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/src/Tuga/Tuga.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="C:\Users\Luisr\Documents\Univ_Prog\COMP_2425\Compiladores\TUGAPROJECT\src\Tuga" />
+          <option name="libDir" value="" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="" />
+          <option name="language" value="" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/src/p1/Tuga.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="C:\Users\Luisr\Documents\Univ_Prog\COMP_2425\Compiladores\TUGAPROJECT\src\p1" />
+          <option name="libDir" value="" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="" />
+          <option name="language" value="" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/src/Tuga.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="C:\Users\Luisr\Documents\Univ_Prog\COMP_2425\Compiladores\TUGAPROJECT\src" />
+          <option name="libDir" value="" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="" />
+          <option name="language" value="" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+      </list>
+    </option>
+  </component>
+</project>

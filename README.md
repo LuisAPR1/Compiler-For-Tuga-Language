@@ -1,2 +1,0 @@
-# LoboMau
-LOBINHO MAU

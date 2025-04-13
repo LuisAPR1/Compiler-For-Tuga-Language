@@ -123,118 +123,210 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
     }
 
     // ===================== CORREÇÃO EM visitRelationalExpr =====================
-    // relationalExpr: relationalExpr : addSub (('<' | '>' | '<=' | '>=') addSub)*
     @Override
     public Void visitRelationalExpr(TugaParser.RelationalExprContext ctx) {
-        // Se houver apenas um operando, apenas o avalia
+        // Se houver só um operando, apenas avalia.
         if (ctx.addSub().size() == 1) {
             visit(ctx.addSub(0));
             return null;
         }
-        // Avalia o operando esquerdo
-        visit(ctx.addSub(0));
-        TugaType leftType = getType(ctx.addSub(0));
 
-        // Para cada operação relacional (normalmente há apenas uma, mas pode haver encadeamento)
-        for (int i = 1; i < ctx.addSub().size(); i++) {
-            TugaType rightType = getType(ctx.addSub(i));
-            // Determina o tipo alvo: se qualquer operando for REAL, o alvo é REAL; caso contrário, INT
-            TugaType targetType = (leftType == TugaType.REAL || rightType == TugaType.REAL) ? TugaType.REAL : TugaType.INT;
+        // Vamos assumir que no TugaParser não há encadeamento complexo do tipo “3 < 4 > 2”.
+        // (Se houver, a lógica para unificar tudo em <, <= exige passos adicionais
+        //  mas normalmente esse tipo de expressão é inválido ou se avalia passo a passo.)
 
-            // Se o operando esquerdo for INT e o alvo for REAL, converte imediatamente o valor já empilhado
-            if (leftType == TugaType.INT && targetType == TugaType.REAL) {
-                emit(OpCode.itod);
-            }
+        for (int i = 0; i < ctx.addSub().size() - 1; i++) {
+            // Extrair lado esquerdo e direito
+            TugaParser.AddSubContext leftCtx  = ctx.addSub(i);
+            TugaParser.AddSubContext rightCtx = ctx.addSub(i+1);
 
-            // Avalia o operando direito
-            visit(ctx.addSub(i));
-            // Se o operando direito for INT e o alvo for REAL, converte o valor empilhado
-            if (rightType == TugaType.INT && targetType == TugaType.REAL) {
-                emit(OpCode.itod);
-            }
+            String op = ctx.getChild(2 * i + 1).getText(); // o operador: <, >, <=, >=
 
-            String op = ctx.getChild(2 * i - 1).getText();
-            if (targetType == TugaType.REAL) {
-                switch (op) {
-                    case "<": emit(OpCode.dlt); break;
-                    case "<=": emit(OpCode.dleq); break;
-                    case ">": emit(OpCode.dgt); break;
-                    case ">=": emit(OpCode.dgeq); break;
+            // Descobrir tipos
+            TugaType leftType  = getType(leftCtx);
+            TugaType rightType = getType(rightCtx);
+            // Decidir tipo alvo (real ou int), caso precise converter
+            TugaType targetType = (leftType == TugaType.REAL || rightType == TugaType.REAL)
+                    ? TugaType.REAL : TugaType.INT;
+
+            if (op.equals(">")) {
+                // Empilha “right” primeiro
+                visit(rightCtx);
+                if (rightType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
                 }
-            } else {
-                switch (op) {
-                    case "<": emit(OpCode.ilt); break;
-                    case "<=": emit(OpCode.ileq); break;
-                    case ">": emit(OpCode.igt); break;
-                    case ">=": emit(OpCode.igeq); break;
+
+                // Depois empilha “left”
+                visit(leftCtx);
+                if (leftType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Emite “lt”
+                if (targetType == TugaType.REAL) {
+                    emit(OpCode.dlt);
+                } else {
+                    emit(OpCode.ilt);
                 }
             }
-            // O resultado da operação relacional é boolean; para encadeamento (se houver), atualiza leftType
-            leftType = TugaType.BOOLEAN;
+            else if (op.equals(">=")) {
+                // Empilha “right”
+                visit(rightCtx);
+                if (rightType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Empilha “left”
+                visit(leftCtx);
+                if (leftType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Emite “leq”
+                if (targetType == TugaType.REAL) {
+                    emit(OpCode.dleq);
+                } else {
+                    emit(OpCode.ileq);
+                }
+            }
+            else if (op.equals("<")) {
+                // Empilha “left” primeiro
+                visit(leftCtx);
+                if (leftType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Empilha “right”
+                visit(rightCtx);
+                if (rightType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Emite “lt”
+                if (targetType == TugaType.REAL) {
+                    emit(OpCode.dlt);
+                } else {
+                    emit(OpCode.ilt);
+                }
+            }
+            else if (op.equals("<=")) {
+                // Empilha “left”
+                visit(leftCtx);
+                if (leftType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Empilha “right”
+                visit(rightCtx);
+                if (rightType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Emite “leq”
+                if (targetType == TugaType.REAL) {
+                    emit(OpCode.dleq);
+                } else {
+                    emit(OpCode.ileq);
+                }
+            }
         }
+
         return null;
     }
 
     // ===========================================================================
 
-    // addSub: addSub : mulDivMod (('+' | '-') mulDivMod)*
     @Override
     public Void visitAddSub(TugaParser.AddSubContext ctx) {
-        // Avalia e empilha o primeiro operando; guarda o tipo atual
+        // Empilha o primeiro operando
         TugaType currentType = getType(ctx.mulDivMod(0));
-        visit(ctx.mulDivMod(0));
+        visit(ctx.mulDivMod(0)); // <-- empilou o primeiro
+
+        // Percorre os demais operandos
         for (int i = 1; i < ctx.mulDivMod().size(); i++) {
+            // Descobre o tipo do próximo operando e o operador
             TugaType nextType = getType(ctx.mulDivMod(i));
-            // Define o tipo alvo: se algum operando for REAL, o resultado será REAL; caso contrário, INT
-            TugaType targetType = (currentType == TugaType.REAL || nextType == TugaType.REAL) ? TugaType.REAL : TugaType.INT;
-            // Se o valor acumulado for INT e o tipo alvo for REAL, converte-o imediatamente
-            if (currentType == TugaType.INT && targetType == TugaType.REAL) {
-                emit(OpCode.itod);
-                currentType = TugaType.REAL;
-            }
-            // Avalia o operando direito
-            visit(ctx.mulDivMod(i));
-            // Se o operando direito for INT e o alvo for REAL, converte-o
-            if (nextType == TugaType.INT && targetType == TugaType.REAL) {
-                emit(OpCode.itod);
-            }
             String op = ctx.getChild(2 * i - 1).getText();
-            if (currentType == TugaType.STRING || nextType == TugaType.STRING) {
+
+            // -----------------------------
+            // 1) Caso concatenação de strings
+            // -----------------------------
+            if (op.equals("+") && (currentType == TugaType.STRING || nextType == TugaType.STRING)) {
+                // Se o operando esquerdo ainda não estiver em string, converta agora,
+                // pois ele está no topo da pilha (resultado da soma anterior ou do primeiro operando).
                 if (currentType != TugaType.STRING) {
-                    if (currentType == TugaType.INT)
+                    if (currentType == TugaType.INT) {
                         emit(OpCode.itos);
-                    else if (currentType == TugaType.REAL)
+                    } else if (currentType == TugaType.REAL) {
                         emit(OpCode.dtos);
-                    else if (currentType == TugaType.BOOLEAN)
+                    } else if (currentType == TugaType.BOOLEAN) {
                         emit(OpCode.btos);
+                    }
                     currentType = TugaType.STRING;
                 }
+
+                // Agora visite o lado direito (empilha segundo operando)
+                visit(ctx.mulDivMod(i));
+
+                // Se o lado direito não for string, converta-o (agora sim ele está no topo)
                 if (nextType != TugaType.STRING) {
-                    if (nextType == TugaType.INT)
+                    if (nextType == TugaType.INT) {
                         emit(OpCode.itos);
-                    else if (nextType == TugaType.REAL)
+                    } else if (nextType == TugaType.REAL) {
                         emit(OpCode.dtos);
-                    else if (nextType == TugaType.BOOLEAN)
+                    } else if (nextType == TugaType.BOOLEAN) {
                         emit(OpCode.btos);
+                    }
                 }
+
+                // Faz o sconcat
                 emit(OpCode.sconcat);
-                currentType = TugaType.STRING;
-            } else if (targetType == TugaType.REAL) {
-                if (op.equals("+"))
-                    emit(OpCode.dadd);
-                else
-                    emit(OpCode.dsub);
-                currentType = TugaType.REAL;
-            } else {
-                if (op.equals("+"))
-                    emit(OpCode.iadd);
-                else
-                    emit(OpCode.isub);
-                currentType = TugaType.INT;
+                currentType = TugaType.STRING; // resultado final é string
+            }
+            // -----------------------------
+            // 2) Caso seja soma/subtração numérica
+            // -----------------------------
+            else {
+                // Precisamos tratar conversões entre int e real
+                TugaType targetType = (currentType == TugaType.REAL || nextType == TugaType.REAL)
+                        ? TugaType.REAL : TugaType.INT;
+
+                // Se o valor acumulado (left) for int e vamos precisar de real, convertemos.
+                // (Ele está no topo da pilha neste momento)
+                if (currentType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                    currentType = TugaType.REAL;
+                }
+
+                // Visita o lado direito
+                visit(ctx.mulDivMod(i));
+
+                // Se o lado direito for int e precisamos de real, convertemos.
+                if (nextType == TugaType.INT && targetType == TugaType.REAL) {
+                    emit(OpCode.itod);
+                }
+
+                // Agora emitimos a operação
+                if (targetType == TugaType.REAL) {
+                    if (op.equals("+")) {
+                        emit(OpCode.dadd);
+                    } else {
+                        emit(OpCode.dsub);
+                    }
+                    currentType = TugaType.REAL;
+                } else {
+                    if (op.equals("+")) {
+                        emit(OpCode.iadd);
+                    } else {
+                        emit(OpCode.isub);
+                    }
+                    currentType = TugaType.INT;
+                }
             }
         }
         return null;
     }
+
 
     // mulDivMod: mulDivMod : unary (('*' | '/' | '%') unary)*
     @Override

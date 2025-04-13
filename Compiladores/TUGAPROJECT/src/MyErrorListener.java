@@ -1,14 +1,13 @@
-
 import org.antlr.v4.runtime.*;
 
 public class MyErrorListener extends BaseErrorListener {
-    private boolean showLexerErrors;
-    private boolean showParserErrors;
+
+    private final boolean showLexerErrors;
+    private final boolean showParserErrors;
     private int numLexerErrors = 0;
     private int numParsingErrors = 0;
 
     public MyErrorListener(boolean showLexerErrors, boolean showParserErrors) {
-        super();
         this.showLexerErrors = showLexerErrors;
         this.showParserErrors = showParserErrors;
     }
@@ -21,13 +20,14 @@ public class MyErrorListener extends BaseErrorListener {
                             RecognitionException e) {
         if (recognizer instanceof Lexer) {
             numLexerErrors++;
-            if (showLexerErrors)
-                System.err.printf("line %d:%d error: %s\n", line, charPositionInLine, msg);
-        }
-        if (recognizer instanceof Parser) {
+            if (showLexerErrors) {
+                System.err.printf("Linha %d:%d erro: %s%n", line, charPositionInLine, msg);
+            }
+        } else if (recognizer instanceof Parser) {
             numParsingErrors++;
-            if (showParserErrors)
-                System.err.printf("line %d:%d error: %s\n", line, charPositionInLine, msg);
+            if (showParserErrors) {
+                System.err.printf("Linha %d:%d erro: %s%n", line, charPositionInLine, msg);
+            }
         }
     }
 

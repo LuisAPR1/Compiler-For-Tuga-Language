@@ -1,348 +1,330 @@
-// VirtualMachineS.java
 package vm;
 
-import vm.Instruction.Instruction;
-import vm.Instruction.Instruction1Arg;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 public class VirtualMachineS {
-    private byte[] bytecodes;
-    private Instruction[] code;
-    private int IP;
-    private Stack<Object> stack;
-    private List<Object> constantPool;
-    private boolean trace = false; // Add a trace flag if needed
 
-    public VirtualMachineS() {
-        stack = new Stack<>();
-    }
+    public void execute(byte[] bytecode) {
+        String codeText = new String(bytecode);
+        String[] lines = codeText.split("\\r?\\n");
 
-    public void execute(byte[] bytecodes) {
-        this.bytecodes = bytecodes;
-        decode();
-        this.IP = 0;
-        run();
-    }
+        List<String> constantPool = new ArrayList<>();
+        List<String> instructions = new ArrayList<>();
+        boolean inPool = false, inInstr = false;
 
-    private void decode() {
-        ArrayList<Instruction> instructions = new ArrayList<>();
-        try (DataInputStream din = new DataInputStream(new ByteArrayInputStream(bytecodes))) {
-            // Read the constant pool
-            int constantPoolSize = din.readInt();
-            constantPool = new ArrayList<>(constantPoolSize);
-            for (int i = 0; i < constantPoolSize; i++) {
-                byte typeTag = din.readByte();
-                switch (typeTag) {
-                    case 0:
-                        constantPool.add(din.readInt());
-                        break;
-                    case 1:
-                        constantPool.add(din.readDouble());
-                        break;
-                    case 2:
-                        constantPool.add(din.readUTF());
-                        break;
-                    case 3:
-                        constantPool.add(din.readBoolean());
-                        break;
-                    default:
-                        throw new RuntimeException("Unknown constant pool type tag: " + typeTag);
+        for (String line : lines) {
+            line = line.trim();
+            if (line.equals("*** Constant pool ***")) {
+                inPool = true;
+                inInstr = false;
+                continue;
+            }
+            if (line.equals("*** Instructions ***")) {
+                inInstr = true;
+                inPool = false;
+                continue;
+            }
+            if (inPool && !line.isEmpty()) {
+                int colonIndex = line.indexOf(":");
+                if (colonIndex >= 0) {
+                    String constant = line.substring(colonIndex + 1).trim();
+                    if (constant.startsWith("\"") && constant.endsWith("\"") && constant.length() >= 2) {
+                        constant = constant.substring(1, constant.length() - 1);
+                    }
+                    constantPool.add(constant);
                 }
             }
-
-            // Read the instructions
-            while (din.available() > 0) {
-                byte opcodeValue = din.readByte();
-                OpCode opcode = OpCode.convert(opcodeValue);
-                switch (opcode.nArgs()) {
-                    case 0:
-                        instructions.add(new Instruction(opcode));
-                        break;
-                    case 1:
-                        int arg = din.readInt();
-                        instructions.add(new Instruction1Arg(opcode, arg));
-                        break;
-                    default:
-                        throw new RuntimeException("Unsupported number of arguments for opcode: " + opcode);
+            if (inInstr && !line.isEmpty()) {
+                int colonIndex = line.indexOf(":");
+                if (colonIndex >= 0) {
+                    String instr = line.substring(colonIndex + 1).trim();
+                    instructions.add(instr);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        this.code = instructions.toArray(new Instruction[0]);
-        if (trace) {
-            System.out.println("Disassembled instructions:");
-            dumpInstructions(bytecodes); // Call the new version internally if needed
-        }
-    }
 
-    public void dumpInstructions(byte[] bytecodes) {
-        try (DataInputStream din = new DataInputStream(new ByteArrayInputStream(bytecodes))) {
-            int constantPoolSize = din.readInt();
-            System.out.println("*** Constant pool ***");
-            for (int i = 0; i < constantPoolSize; i++) {
-                byte typeTag = din.readByte();
-                System.out.print(i + ": ");
-                switch (typeTag) {
-                    case 0:
-                        System.out.println(din.readInt());
-                        break;
-                    case 1:
-                        System.out.println(din.readDouble());
-                        break;
-                    case 2:
-                        System.out.println("\"" + din.readUTF() + "\""); // Add double quotes here
-                        break;
-                    case 3:
-                        System.out.println(din.readBoolean());
-                        break;
-                }
-            }
-            System.out.println("*** Instructions ***");
-            List<Instruction> instructions = new ArrayList<>();
-            while (din.available() > 0) {
-                byte opcodeValue = din.readByte();
-                OpCode opcode = OpCode.convert(opcodeValue);
-                switch (opcode.nArgs()) {
-                    case 0:
-                        instructions.add(new Instruction(opcode));
-                        break;
-                    case 1:
-                        int arg = din.readInt();
-                        instructions.add(new Instruction1Arg(opcode, arg));
-                        break;
-                }
-            }
-            this.code = instructions.toArray(new Instruction[0]);
-            for (int i = 0; i < this.code.length; i++) {
-                System.out.print(i + ": " + this.code[i].getOpCode());
-                if (this.code[i] instanceof Instruction1Arg) {
-                    System.out.println(" " + ((Instruction1Arg) this.code[i]).getArg());
-                } else {
-                    System.out.println();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void runtimeError(String message) {
-        System.err.println("Runtime Error at instruction " + IP + ": " + message);
-        if (trace) {
-            System.err.println("Stack: " + stack);
-        }
-        System.exit(1);
-    }
-
-    private void run() {
-        while (IP < code.length) {
-            Instruction instruction = code[IP];
-            OpCode opcode = instruction.getOpCode();
-            if (trace) {
-                System.out.println("Executing " + IP + ": " + instruction + ", Stack: " + stack);
-            }
+        Stack<Object> stack = new Stack<>();
+        int ip = 0;
+        while (ip < instructions.size()) {
+            String instrLine = instructions.get(ip);
+            String[] parts = instrLine.split(" ");
+            String opcode = parts[0];
             switch (opcode) {
-                case halt:
-                    return;
-                case iconst:
-                    stack.push(((Instruction1Arg) instruction).getArg());
+                case "iconst": {
+                    int value = Integer.parseInt(parts[1]);
+                    stack.push(value);
                     break;
-                case dconst:
-                    stack.push(constantPool.get(((Instruction1Arg) instruction).getArg()));
+                }
+                case "dconst": {
+                    int index = Integer.parseInt(parts[1]);
+                    double d = Double.parseDouble(constantPool.get(index));
+                    stack.push(d);
                     break;
-                case sconst:
-                    stack.push(constantPool.get(((Instruction1Arg) instruction).getArg()));
+                }
+                case "sconst": {
+                    int index = Integer.parseInt(parts[1]);
+                    stack.push(constantPool.get(index));
                     break;
-                case tconst:
+                }
+                case "tconst": {
                     stack.push(true);
                     break;
-                case fconst:
+                }
+                case "fconst": {
                     stack.push(false);
                     break;
-                case iadd:
-                    int i2 = (int) stack.pop();
-                    int i1 = (int) stack.pop();
-                    stack.push(i1 + i2);
+                }
+                case "itod": {
+                    int value = (Integer) stack.pop();
+                    stack.push((double) value);
                     break;
-                case isub:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    stack.push(i1 - i2);
+                }
+                case "itos": {
+                    int value = (Integer) stack.pop();
+                    stack.push(String.valueOf(value));
                     break;
-                case imult:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    stack.push(i1 * i2);
+                }
+                case "dtos": {
+                    double value = (Double) stack.pop();
+                    stack.push(String.valueOf(value));
                     break;
-                case idiv:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    if (i2 == 0) runtimeError("Division by zero");
-                    stack.push(i1 / i2);
+                }
+                case "iadd": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a + b);
                     break;
-                case imod:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    if (i2 == 0) runtimeError("Modulo by zero");
-                    stack.push(i1 % i2);
+                }
+                case "isub": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a - b);
                     break;
-                case iuminus:
-                    stack.push(-(int) stack.pop());
+                }
+                case "imult": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a * b);
                     break;
-                case ilt:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    stack.push(i1 < i2);
+                }
+                case "idiv": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a / b);
                     break;
-                case ileq:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    stack.push(i1 <= i2);
+                }
+                case "imod": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a % b);
                     break;
-                case igt:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    stack.push(i1 > i2);
+                }
+                case "iuminus": {
+                    int a = (Integer) stack.pop();
+                    stack.push(-a);
                     break;
-                case igeq:
-                    i2 = (int) stack.pop();
-                    i1 = (int) stack.pop();
-                    stack.push(i1 >= i2);
+                }
+                case "dadd": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a + b);
                     break;
-                case ieq:
-                    stack.push(stack.pop().equals(stack.pop()));
+                }
+                case "dsub": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a - b);
                     break;
-                case ineq:
-                    stack.push(!stack.pop().equals(stack.pop()));
+                }
+                case "dmult": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a * b);
                     break;
-                case iprint:
-                    System.out.println(stack.pop());
+                }
+                case "ddiv": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a / b);
                     break;
-                case dadd:
-                    double d2 = (double) stack.pop();
-                    double d1 = (double) stack.pop();
-                    stack.push(d1 + d2);
+                }
+                case "dmod": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a % b);
                     break;
-                case dsub:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    stack.push(d1 - d2);
+                }
+                case "duminus": {
+                    double a = (Double) stack.pop();
+                    stack.push(-a);
                     break;
-                case dmult:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    stack.push(d1 * d2);
+                }
+                // Operações de comparação para inteiros
+                case "ieq": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a == b);
                     break;
-                case ddiv:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    if (d2 == 0) runtimeError("Division by zero");
-                    stack.push(d1 / d2);
+                }
+                case "ineq": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a != b);
                     break;
-                case dmod:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    if (d2 == 0) runtimeError("Modulo by zero");
-                    stack.push(d1 % d2);
+                }
+                case "ilt": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a < b);
                     break;
-                case duminus:
-                    stack.push(-(double) stack.pop());
+                }
+                case "ileq": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a <= b);
                     break;
-                case dlt:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    stack.push(d1 < d2);
+                }
+                case "igt": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a > b);
                     break;
-                case dleq:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    stack.push(d1 <= d2);
+                }
+                case "igeq": {
+                    int b = (Integer) stack.pop();
+                    int a = (Integer) stack.pop();
+                    stack.push(a >= b);
                     break;
-                case dgt:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    stack.push(d1 > d2);
+                }
+                // Comparações para doubles
+                case "deq": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a == b);
                     break;
-                case dgeq:
-                    d2 = (double) stack.pop();
-                    d1 = (double) stack.pop();
-                    stack.push(d1 >= d2);
+                }
+                case "dneq": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a != b);
                     break;
-                case deq:
-                    stack.push(stack.pop().equals(stack.pop()));
+                }
+                case "dlt": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a < b);
                     break;
-                case dneq:
-                    stack.push(!stack.pop().equals(stack.pop()));
+                }
+                case "dleq": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a <= b);
                     break;
-                case dprint:
-                    System.out.println(stack.pop());
+                }
+                case "dgt": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a > b);
                     break;
-                case sconcat:
-                    String s2 = (String) stack.pop();
-                    String s1 = (String) stack.pop();
-                    stack.push(s1 + s2);
+                }
+                case "dgeq": {
+                    double b = (Double) stack.pop();
+                    double a = (Double) stack.pop();
+                    stack.push(a >= b);
                     break;
-                case sprint:
-                    System.out.println(stack.pop());
+                }
+                // Comparações de strings
+                case "seq": {
+                    String b = (String) stack.pop();
+                    String a = (String) stack.pop();
+                    stack.push(a.equals(b));
                     break;
-                case seq:
-                    stack.push(stack.pop().equals(stack.pop()));
+                }
+                case "sneq": {
+                    String b = (String) stack.pop();
+                    String a = (String) stack.pop();
+                    stack.push(!a.equals(b));
                     break;
-                case sneq:
-                    stack.push(!stack.pop().equals(stack.pop()));
+                }
+                // Comparações booleanas
+                case "beq": {
+                    boolean b = (Boolean) stack.pop();
+                    boolean a = (Boolean) stack.pop();
+                    stack.push(a == b);
                     break;
-                case and:
-                    boolean b2 = (boolean) stack.pop();
-                    boolean b1 = (boolean) stack.pop();
-                    stack.push(b1 && b2);
+                }
+                case "bneq": {
+                    boolean b = (Boolean) stack.pop();
+                    boolean a = (Boolean) stack.pop();
+                    stack.push(a != b);
                     break;
-                case or:
-                    b2 = (boolean) stack.pop();
-                    b1 = (boolean) stack.pop();
-                    stack.push(b1 || b2);
+                }
+                // Operadores lógicos
+                case "and": {
+                    boolean b = (Boolean) stack.pop();
+                    boolean a = (Boolean) stack.pop();
+                    stack.push(a && b);
                     break;
-                case not:
-                    stack.push(!(boolean) stack.pop());
+                }
+                case "or": {
+                    boolean b = (Boolean) stack.pop();
+                    boolean a = (Boolean) stack.pop();
+                    stack.push(a || b);
                     break;
-                case bprint:
-                    if ((boolean) stack.pop()) {
-                        System.out.println("verdadeiro");
-                    } else {
-                        System.out.println("falso");
+                }
+                case "not": {
+                    boolean a = (Boolean) stack.pop();
+                    stack.push(!a);
+                    break;
+                }
+                // Conversões para string
+                case "btos": {
+                    boolean value = (Boolean) stack.pop();
+                    stack.push(value ? "verdadeiro" : "falso");
+                    break;
+                }
+                // Concatenação de strings
+                case "sconcat": {
+                    String b = (String) stack.pop();
+                    String a = (String) stack.pop();
+                    if (a.endsWith("=") && (b.isEmpty() || b.charAt(0) != ' ')) {
+                        a = a + " ";
                     }
+                    stack.push(a + b);
                     break;
-                case beq:
-                    stack.push(stack.pop().equals(stack.pop()));
+                }
+                // Impressão
+                case "iprint": {
+                    Object value = stack.pop();
+                    System.out.println(value);
                     break;
-                case bneq:
-                    stack.push(!stack.pop().equals(stack.pop()));
+                }
+                case "dprint": {
+                    Object value = stack.pop();
+                    System.out.println(value);
                     break;
-                case itod:
-                    stack.push((double) (int) stack.pop());
+                }
+                case "sprint": {
+                    Object value = stack.pop();
+                    System.out.println(value);
                     break;
-                case itos:
-                    stack.push(String.valueOf((int) stack.pop()));
+                }
+                case "bprint": {
+                    boolean value = (Boolean) stack.pop();
+                    System.out.println(value ? "verdadeiro" : "falso");
                     break;
-                case dtos:
-                    stack.push(String.valueOf((double) stack.pop()));
-                    break;
-                case btos:
-                    if ((boolean) stack.pop()) {
-                        stack.push("verdadeiro");
-                    } else {
-                        stack.push("falso");
-                    }
-                    break;
-                default:
-                    runtimeError("Unknown opcode: " + opcode);
+                }
+                case "halt": {
+                    return;
+                }
+                default: {
+                    System.err.println("Instrução desconhecida: " + opcode);
+                    return;
+                }
             }
-            IP++;
+            ip++;
         }
     }
 }

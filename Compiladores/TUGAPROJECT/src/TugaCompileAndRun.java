@@ -1,104 +1,93 @@
-// TugaCompileAndRun.java
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
-import codegen.CodeGenerationVisitor;
-import codegen.ConstantPool;
+import Tuga.TugaLexer;
+import Tuga.TugaParser;
 import semantic.TypeCheckingVisitor;
+import codegen.CodeGenerationVisitor;
 import vm.VirtualMachineS;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Scanner;
 
 public class TugaCompileAndRun {
+
     public static void main(String[] args) {
         boolean showLexerErrors = false;
         boolean showParserErrors = false;
         boolean showTypeCheckingErrors = false;
 
-        String inputFile = (args.length > 0) ? args[0] : null;
-        CharStream input = null;
+        // Leitura do código de entrada
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    break;
+                }
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Erro na leitura da entrada: " + e.getMessage());
+            return;
+        }
 
         try {
-            if (inputFile != null) {
-                input = CharStreams.fromFileName(inputFile);
-            } else {
-                StringBuilder sourceBuilder = new StringBuilder();
-                Scanner scanner = new Scanner(System.in);
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (line.trim().isEmpty())
-                        break;
-                    sourceBuilder.append(line).append("\n");
-                }
-                String src = sourceBuilder.toString().trim();
-                input = CharStreams.fromString(src);
-                scanner.close();
-            }
+            CharStream input = CharStreams.fromString(sb.toString());
+            TugaLexer lexer = new TugaLexer(input);
 
-            src.TugaLexer lexer = new src.TugaLexer(input);
+            // Configuração do listener de erros
             MyErrorListener errorListener = new MyErrorListener(showLexerErrors, showParserErrors);
             lexer.removeErrorListeners();
             lexer.addErrorListener(errorListener);
 
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-            src.TugaParser parser = new src.TugaParser(tokens);
+            TugaParser parser = new TugaParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errorListener);
 
             ParseTree tree = parser.program();
 
+            // Checa erros léxicos e sintáticos
             if (errorListener.getNumLexerErrors() > 0) {
-                System.out.println("Input has lexical errors");
+                System.out.println("Input possui erros léxicos");
                 return;
             }
             if (errorListener.getNumParsingErrors() > 0) {
-                System.out.println("Input has parsing errors");
+                System.out.println("Input possui erros de parsing");
                 return;
             }
 
+            // Checagem de tipos
             TypeCheckingVisitor typeChecker = new TypeCheckingVisitor(showTypeCheckingErrors);
             typeChecker.visit(tree);
             if (!typeChecker.isTypeCheckSuccessful()) {
-                System.out.println("Input has type checking errors");
+                System.out.println("Input possui erros de type checking");
                 return;
             }
 
+            // Geração do bytecode
             CodeGenerationVisitor codeGen = new CodeGenerationVisitor();
             codeGen.visit(tree);
             byte[] bytecodes = codeGen.getBytecode();
-            ConstantPool constantPool = codeGen.getConstantPool();
 
-            // Write constant pool and bytecodes to file
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            DataOutputStream dos = new DataOutputStream(bos);
-            constantPool.writeTo(dos);
-            dos.write(bytecodes);
-            byte[] finalBytecodes = bos.toByteArray();
-            dos.close();
+            // Escrita do bytecode no arquivo
+            try (FileOutputStream fos = new FileOutputStream("bytecodes.bc")) {
+                fos.write(bytecodes);
+            }
 
-            FileOutputStream fos = new FileOutputStream("bytecodes.bc");
-            fos.write(finalBytecodes);
-            fos.close();
-
-            // Read immediately the generated file
+            // Leitura e impressão do bytecode
             byte[] codeFromFile = Files.readAllBytes(new File("bytecodes.bc").toPath());
+            String bytecodeText = new String(codeFromFile);
+            System.out.print(bytecodeText);
 
-            // Print constant pool and instructions
-            VirtualMachineS tempVm = new VirtualMachineS();
-            tempVm.dumpInstructions(codeFromFile); // Call the new method with the byte array
+            System.out.println("*** VM output ***");
 
-            // Remove the VM execution part
-             System.out.println("*** VM output ***");
-             VirtualMachineS vm = new VirtualMachineS();
-
+            // Execução na máquina virtual
+            VirtualMachineS vm = new VirtualMachineS();
             vm.execute(codeFromFile);
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("Erro: " + e.getMessage());
         }
     }
 }

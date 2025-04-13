@@ -5,5 +5,5 @@ public enum TugaType {
     REAL,
     BOOLEAN,
     STRING,
-    ERROR;  // Representa um erro de tipo
+    ERROR // Representa um erro de tipo
 }

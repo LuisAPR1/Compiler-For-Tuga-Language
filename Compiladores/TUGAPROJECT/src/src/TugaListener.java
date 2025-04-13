@@ -1,4 +1,5 @@
-package src;// Generated from C:/Users/Luisr/Documents/Univ_Prog/COMP_2425/Compiladores/TUGAPROJECT/src/Tuga.g4 by ANTLR 4.13.2
+// Generated from C:/Users/Luisr/Documents/Univ_Prog/COMP_2425/Compiladores/ORIGINAL_TUGAPROJECT/src/Tuga.g4 by ANTLR 4.13.2
+package src;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -27,113 +28,95 @@ public interface TugaListener extends ParseTreeListener {
 	 */
 	void exitInstruction(TugaParser.InstructionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Not}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Enter a parse tree produced by {@link TugaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterNot(TugaParser.NotContext ctx);
+	void enterExpression(TugaParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Not}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Exit a parse tree produced by {@link TugaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitNot(TugaParser.NotContext ctx);
+	void exitExpression(TugaParser.ExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code MulDivMod}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Enter a parse tree produced by {@link TugaParser#orExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterMulDivMod(TugaParser.MulDivModContext ctx);
+	void enterOrExpr(TugaParser.OrExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code MulDivMod}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Exit a parse tree produced by {@link TugaParser#orExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitMulDivMod(TugaParser.MulDivModContext ctx);
+	void exitOrExpr(TugaParser.OrExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code AddSub}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Enter a parse tree produced by {@link TugaParser#andExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAndExpr(TugaParser.AndExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TugaParser#andExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAndExpr(TugaParser.AndExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TugaParser#equalityExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqualityExpr(TugaParser.EqualityExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TugaParser#equalityExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqualityExpr(TugaParser.EqualityExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TugaParser#relationalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelationalExpr(TugaParser.RelationalExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TugaParser#relationalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelationalExpr(TugaParser.RelationalExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TugaParser#addSub}.
 	 * @param ctx the parse tree
 	 */
 	void enterAddSub(TugaParser.AddSubContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code AddSub}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Exit a parse tree produced by {@link TugaParser#addSub}.
 	 * @param ctx the parse tree
 	 */
 	void exitAddSub(TugaParser.AddSubContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Parens}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Enter a parse tree produced by {@link TugaParser#mulDivMod}.
 	 * @param ctx the parse tree
 	 */
-	void enterParens(TugaParser.ParensContext ctx);
+	void enterMulDivMod(TugaParser.MulDivModContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Parens}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Exit a parse tree produced by {@link TugaParser#mulDivMod}.
 	 * @param ctx the parse tree
 	 */
-	void exitParens(TugaParser.ParensContext ctx);
+	void exitMulDivMod(TugaParser.MulDivModContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Relational}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Enter a parse tree produced by {@link TugaParser#unary}.
 	 * @param ctx the parse tree
 	 */
-	void enterRelational(TugaParser.RelationalContext ctx);
+	void enterUnary(TugaParser.UnaryContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Relational}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Exit a parse tree produced by {@link TugaParser#unary}.
 	 * @param ctx the parse tree
 	 */
-	void exitRelational(TugaParser.RelationalContext ctx);
+	void exitUnary(TugaParser.UnaryContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code LiteralExpr}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Enter a parse tree produced by {@link TugaParser#primary}.
 	 * @param ctx the parse tree
 	 */
-	void enterLiteralExpr(TugaParser.LiteralExprContext ctx);
+	void enterPrimary(TugaParser.PrimaryContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code LiteralExpr}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Exit a parse tree produced by {@link TugaParser#primary}.
 	 * @param ctx the parse tree
 	 */
-	void exitLiteralExpr(TugaParser.LiteralExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Logical}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterLogical(TugaParser.LogicalContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Logical}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitLogical(TugaParser.LogicalContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Negate}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterNegate(TugaParser.NegateContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Negate}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitNegate(TugaParser.NegateContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Equality}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterEquality(TugaParser.EqualityContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Equality}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitEquality(TugaParser.EqualityContext ctx);
+	void exitPrimary(TugaParser.PrimaryContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code IntLiteral}
 	 * labeled alternative in {@link TugaParser#literal}.

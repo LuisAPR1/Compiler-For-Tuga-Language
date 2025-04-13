@@ -1,27 +1,34 @@
 grammar Tuga;
 
+// The entry point
 program : (instruction)+ EOF;
 
+// High-level instruction
 instruction : ESCREVE expression ';' ;
 
-expression
-    : expression op=('*' | '/' | '%') expression     # MulDivMod
-    | expression op=('+' | '-') expression           # AddSub
-    | expression op=('<' | '>' | '<=' | '>=') expression # Relational
-    | expression op=('igual' | 'diferente') expression # Equality
-    | expression op=('e' | 'ou') expression            # Logical
-    | '-' expression                                   # Negate
-    | 'nao' expression                                 # Not
-    | '(' expression ')'                               # Parens
-    | literal                                          # LiteralExpr
-    ;
+// Expression handling different precedence levels
+expression     : orExpr ;
 
+orExpr         : andExpr ('ou' andExpr)* ;
+andExpr        : equalityExpr ('e' equalityExpr)* ;
+equalityExpr   : relationalExpr (('igual' | 'diferente') relationalExpr)* ;
+relationalExpr : addSub (('<' | '>' | '<=' | '>=') addSub)* ;
+addSub         : mulDivMod (('+' | '-') mulDivMod)* ;
+mulDivMod      : unary (('*' | '/' | '%') unary)* ;
+
+unary          : ('nao' | '-') unary
+               | primary ;
+
+primary        : literal
+               | '(' expression ')' ;
+
+// Terminal and lexer rules
 literal
-    : INT     # IntLiteral
-    | REAL    # RealLiteral
-    | STRING  # StringLiteral
-    | 'verdadeiro'  # TrueLiteral
-    | 'falso'       # FalseLiteral
+    : INT            # IntLiteral
+    | REAL           # RealLiteral
+    | STRING         # StringLiteral
+    | 'verdadeiro'   # TrueLiteral
+    | 'falso'        # FalseLiteral
     ;
 
 ESCREVE : 'escreve' ;

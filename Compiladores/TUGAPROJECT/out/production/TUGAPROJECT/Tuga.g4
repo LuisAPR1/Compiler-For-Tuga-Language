@@ -1,33 +1,39 @@
 grammar Tuga;
 
-program : (instruction)+ EOF;
+program
+    : instruction+ EOF
+    ;
 
-instruction : ESCREVE expression ';' ;
+instruction
+    : ESCREVE expression ';'
+    ;
 
 expression
-    : expression op=('*' | '/' | '%') expression     # MulDivMod
-    | expression op=('+' | '-') expression           # AddSub
-    | expression op=('<' | '>' | '<=' | '>=') expression # Relational
-    | expression op=('igual' | 'diferente') expression # Equality
-    | expression op=('e' | 'ou') expression            # Logical
-    | '-' expression                                   # Negate
-    | 'nao' expression                                 # Not
-    | '(' expression ')'                               # Parens
-    | literal                                          # LiteralExpr
+    : <assoc=right> '-' expression                        # Negate
+    | <assoc=right> 'nao' expression                      # Not
+    | expression ('*' | '/' | '%') expression             # MulDivMod
+    | expression ('+' | '-') expression                   # AddSub
+    | expression ('<' | '>' | '<=' | '>=') expression      # Relational
+    | expression ('igual' | 'diferente') expression        # Equality
+    | expression 'e' expression                           # LogicalAnd
+    | expression 'ou' expression                          # LogicalOr
+    | '(' expression ')'                                  # Parens
+    | literal                                             # LiteralExpr
     ;
 
 literal
-    : INT     # IntLiteral
-    | REAL    # RealLiteral
-    | STRING  # StringLiteral
-    | 'verdadeiro'  # TrueLiteral
-    | 'falso'       # FalseLiteral
+    : INT             # IntLiteral
+    | REAL            # RealLiteral
+    | STRING          # StringLiteral
+    | 'verdadeiro'    # TrueLiteral
+    | 'falso'         # FalseLiteral
     ;
 
-ESCREVE : 'escreve' ;
-INT     : [0-9]+ ;
-REAL    : [0-9]+ '.' [0-9]+ ;
-STRING  : '"' ( ~["\\] | '\\' . )* '"' ;
-WS      : [ \t\r\n]+ -> skip ;
-SL_COMMENT : '//' ~[\r\n]* -> skip ;
-ML_COMMENT : '/*' .*? '*/' -> skip ;
+// Tokens
+ESCREVE : 'escreve';
+INT     : [0-9]+;
+REAL    : [0-9]+ '.' [0-9]+;
+STRING  : '"' ( ~["\\] | '\\' . )* '"';
+WS      : [ \t\r\n]+ -> skip;
+SL_COMMENT : '//' ~[\r\n]* -> skip;
+ML_COMMENT : '/*' .*? '*/' -> skip;

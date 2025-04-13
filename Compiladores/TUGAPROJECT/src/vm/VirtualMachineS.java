@@ -255,24 +255,24 @@ public class VirtualMachineS {
                     stack.push(-(double) stack.pop());
                     break;
                 case dlt:
-                    double d2_lt = (double) stack.pop();
-                    double d1_lt = (double) stack.pop();
-                    stack.push(d1_lt < d2_lt);
+                    d2 = (double) stack.pop();
+                    d1 = (double) stack.pop();
+                    stack.push(d1 < d2);
                     break;
                 case dleq:
-                    double d2_leq = (double) stack.pop();
-                    double d1_leq = (double) stack.pop();
-                    stack.push(d1_leq <= d2_leq);
+                    d2 = (double) stack.pop();
+                    d1 = (double) stack.pop();
+                    stack.push(d1 <= d2);
                     break;
                 case dgt:
-                    double d2_gt = (double) stack.pop();
-                    double d1_gt = (double) stack.pop();
-                    stack.push(d1_gt > d2_gt);
+                    d2 = (double) stack.pop();
+                    d1 = (double) stack.pop();
+                    stack.push(d1 > d2);
                     break;
                 case dgeq:
-                    double d2_geq = (double) stack.pop();
-                    double d1_geq = (double) stack.pop();
-                    stack.push(d1_geq >= d2_geq);
+                    d2 = (double) stack.pop();
+                    d1 = (double) stack.pop();
+                    stack.push(d1 >= d2);
                     break;
                 case deq:
                     stack.push(stack.pop().equals(stack.pop()));

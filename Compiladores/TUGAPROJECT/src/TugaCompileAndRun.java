@@ -1,4 +1,4 @@
-
+// TugaCompileAndRun.java
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -91,8 +91,10 @@ public class TugaCompileAndRun {
             VirtualMachineS tempVm = new VirtualMachineS();
             tempVm.dumpInstructions(codeFromFile); // Call the new method with the byte array
 
-            System.out.println("*** VM output ***");
-            VirtualMachineS vm = new VirtualMachineS();
+            // Remove the VM execution part
+             System.out.println("*** VM output ***");
+             VirtualMachineS vm = new VirtualMachineS();
+
             vm.execute(codeFromFile);
 
         } catch (IOException e) {

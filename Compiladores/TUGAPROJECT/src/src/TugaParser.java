@@ -1,4 +1,5 @@
-package src;// Generated from C:/Users/Luisr/Documents/Univ_Prog/COMP_2425/Compiladores/TUGAPROJECT/src/Tuga.g4 by ANTLR 4.13.2
+// Generated from C:/Users/Luisr/Documents/Univ_Prog/COMP_2425/Compiladores/ORIGINAL_TUGAPROJECT/src/Tuga.g4 by ANTLR 4.13.2
+package src;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -21,19 +22,22 @@ public class TugaParser extends Parser {
 		T__17=18, T__18=19, ESCREVE=20, INT=21, REAL=22, STRING=23, WS=24, SL_COMMENT=25, 
 		ML_COMMENT=26;
 	public static final int
-		RULE_program = 0, RULE_instruction = 1, RULE_expression = 2, RULE_literal = 3;
+		RULE_program = 0, RULE_instruction = 1, RULE_expression = 2, RULE_orExpr = 3, 
+		RULE_andExpr = 4, RULE_equalityExpr = 5, RULE_relationalExpr = 6, RULE_addSub = 7, 
+		RULE_mulDivMod = 8, RULE_unary = 9, RULE_primary = 10, RULE_literal = 11;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "instruction", "expression", "literal"
+			"program", "instruction", "expression", "orExpr", "andExpr", "equalityExpr", 
+			"relationalExpr", "addSub", "mulDivMod", "unary", "primary", "literal"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "';'", "'*'", "'/'", "'%'", "'+'", "'-'", "'<'", "'>'", "'<='", 
-			"'>='", "'igual'", "'diferente'", "'e'", "'ou'", "'nao'", "'('", "')'", 
-			"'verdadeiro'", "'falso'", "'escreve'"
+			null, "';'", "'ou'", "'e'", "'igual'", "'diferente'", "'<'", "'>'", "'<='", 
+			"'>='", "'+'", "'-'", "'*'", "'/'", "'%'", "'nao'", "'('", "')'", "'verdadeiro'", 
+			"'falso'", "'escreve'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -130,21 +134,21 @@ public class TugaParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(9); 
+			setState(25); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(8);
+				setState(24);
 				instruction();
 				}
 				}
-				setState(11); 
+				setState(27); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==ESCREVE );
-			setState(13);
+			setState(29);
 			match(EOF);
 			}
 		}
@@ -190,11 +194,11 @@ public class TugaParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(15);
+			setState(31);
 			match(ESCREVE);
-			setState(16);
-			expression(0);
-			setState(17);
+			setState(32);
+			expression();
+			setState(33);
 			match(T__0);
 			}
 		}
@@ -211,70 +215,337 @@ public class TugaParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionContext extends ParserRuleContext {
+		public OrExprContext orExpr() {
+			return getRuleContext(OrExprContext.class,0);
+		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expression; }
-	 
-		public ExpressionContext() { }
-		public void copyFrom(ExpressionContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class NotContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public NotContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterNot(this);
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitNot(this);
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitNot(this);
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
+
+	public final ExpressionContext expression() throws RecognitionException {
+		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_expression);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(35);
+			orExpr();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	@SuppressWarnings("CheckReturnValue")
-	public static class MulDivModContext extends ExpressionContext {
-		public Token op;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+	public static class OrExprContext extends ParserRuleContext {
+		public List<AndExprContext> andExpr() {
+			return getRuleContexts(AndExprContext.class);
 		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
+		public AndExprContext andExpr(int i) {
+			return getRuleContext(AndExprContext.class,i);
 		}
-		public MulDivModContext(ExpressionContext ctx) { copyFrom(ctx); }
+		public OrExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_orExpr; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterMulDivMod(this);
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterOrExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitMulDivMod(this);
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitOrExpr(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitMulDivMod(this);
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitOrExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
+
+	public final OrExprContext orExpr() throws RecognitionException {
+		OrExprContext _localctx = new OrExprContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_orExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(37);
+			andExpr();
+			setState(42);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__1) {
+				{
+				{
+				setState(38);
+				match(T__1);
+				setState(39);
+				andExpr();
+				}
+				}
+				setState(44);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	@SuppressWarnings("CheckReturnValue")
-	public static class AddSubContext extends ExpressionContext {
-		public Token op;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+	public static class AndExprContext extends ParserRuleContext {
+		public List<EqualityExprContext> equalityExpr() {
+			return getRuleContexts(EqualityExprContext.class);
 		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
+		public EqualityExprContext equalityExpr(int i) {
+			return getRuleContext(EqualityExprContext.class,i);
 		}
-		public AddSubContext(ExpressionContext ctx) { copyFrom(ctx); }
+		public AndExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_andExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterAndExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitAndExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitAndExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final AndExprContext andExpr() throws RecognitionException {
+		AndExprContext _localctx = new AndExprContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_andExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(45);
+			equalityExpr();
+			setState(50);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__2) {
+				{
+				{
+				setState(46);
+				match(T__2);
+				setState(47);
+				equalityExpr();
+				}
+				}
+				setState(52);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class EqualityExprContext extends ParserRuleContext {
+		public List<RelationalExprContext> relationalExpr() {
+			return getRuleContexts(RelationalExprContext.class);
+		}
+		public RelationalExprContext relationalExpr(int i) {
+			return getRuleContext(RelationalExprContext.class,i);
+		}
+		public EqualityExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_equalityExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterEqualityExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitEqualityExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitEqualityExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final EqualityExprContext equalityExpr() throws RecognitionException {
+		EqualityExprContext _localctx = new EqualityExprContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_equalityExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(53);
+			relationalExpr();
+			setState(58);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__3 || _la==T__4) {
+				{
+				{
+				setState(54);
+				_la = _input.LA(1);
+				if ( !(_la==T__3 || _la==T__4) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(55);
+				relationalExpr();
+				}
+				}
+				setState(60);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class RelationalExprContext extends ParserRuleContext {
+		public List<AddSubContext> addSub() {
+			return getRuleContexts(AddSubContext.class);
+		}
+		public AddSubContext addSub(int i) {
+			return getRuleContext(AddSubContext.class,i);
+		}
+		public RelationalExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_relationalExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterRelationalExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitRelationalExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitRelationalExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final RelationalExprContext relationalExpr() throws RecognitionException {
+		RelationalExprContext _localctx = new RelationalExprContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_relationalExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(61);
+			addSub();
+			setState(66);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 960L) != 0)) {
+				{
+				{
+				setState(62);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 960L) != 0)) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(63);
+				addSub();
+				}
+				}
+				setState(68);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class AddSubContext extends ParserRuleContext {
+		public List<MulDivModContext> mulDivMod() {
+			return getRuleContexts(MulDivModContext.class);
+		}
+		public MulDivModContext mulDivMod(int i) {
+			return getRuleContext(MulDivModContext.class,i);
+		}
+		public AddSubContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_addSub; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterAddSub(this);
@@ -289,333 +560,39 @@ public class TugaParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class ParensContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public ParensContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterParens(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitParens(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitParens(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class RelationalContext extends ExpressionContext {
-		public Token op;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public RelationalContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterRelational(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitRelational(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitRelational(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class LiteralExprContext extends ExpressionContext {
-		public LiteralContext literal() {
-			return getRuleContext(LiteralContext.class,0);
-		}
-		public LiteralExprContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterLiteralExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitLiteralExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitLiteralExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class LogicalContext extends ExpressionContext {
-		public Token op;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public LogicalContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterLogical(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitLogical(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitLogical(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class NegateContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public NegateContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterNegate(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitNegate(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitNegate(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class EqualityContext extends ExpressionContext {
-		public Token op;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public EqualityContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterEquality(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitEquality(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitEquality(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 
-	public final ExpressionContext expression() throws RecognitionException {
-		return expression(0);
-	}
-
-	private ExpressionContext expression(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		ExpressionContext _localctx = new ExpressionContext(_ctx, _parentState);
-		ExpressionContext _prevctx = _localctx;
-		int _startState = 4;
-		enterRecursionRule(_localctx, 4, RULE_expression, _p);
+	public final AddSubContext addSub() throws RecognitionException {
+		AddSubContext _localctx = new AddSubContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_addSub);
 		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
+			setState(69);
+			mulDivMod();
+			setState(74);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case T__5:
+			_la = _input.LA(1);
+			while (_la==T__9 || _la==T__10) {
 				{
-				_localctx = new NegateContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-
-				setState(20);
-				match(T__5);
-				setState(21);
-				expression(4);
-				}
-				break;
-			case T__14:
 				{
-				_localctx = new NotContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(22);
-				match(T__14);
-				setState(23);
-				expression(3);
+				setState(70);
+				_la = _input.LA(1);
+				if ( !(_la==T__9 || _la==T__10) ) {
+				_errHandler.recoverInline(this);
 				}
-				break;
-			case T__15:
-				{
-				_localctx = new ParensContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(24);
-				match(T__15);
-				setState(25);
-				expression(0);
-				setState(26);
-				match(T__16);
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
 				}
-				break;
-			case T__17:
-			case T__18:
-			case INT:
-			case REAL:
-			case STRING:
-				{
-				_localctx = new LiteralExprContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(28);
-				literal();
+				setState(71);
+				mulDivMod();
 				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(48);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					setState(46);
-					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
-					case 1:
-						{
-						_localctx = new MulDivModContext(new ExpressionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(31);
-						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(32);
-						((MulDivModContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 28L) != 0)) ) {
-							((MulDivModContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(33);
-						expression(10);
-						}
-						break;
-					case 2:
-						{
-						_localctx = new AddSubContext(new ExpressionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(34);
-						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(35);
-						((AddSubContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !(_la==T__4 || _la==T__5) ) {
-							((AddSubContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(36);
-						expression(9);
-						}
-						break;
-					case 3:
-						{
-						_localctx = new RelationalContext(new ExpressionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(37);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(38);
-						((RelationalContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 1920L) != 0)) ) {
-							((RelationalContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(39);
-						expression(8);
-						}
-						break;
-					case 4:
-						{
-						_localctx = new EqualityContext(new ExpressionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(40);
-						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(41);
-						((EqualityContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !(_la==T__10 || _la==T__11) ) {
-							((EqualityContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(42);
-						expression(7);
-						}
-						break;
-					case 5:
-						{
-						_localctx = new LogicalContext(new ExpressionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(43);
-						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(44);
-						((LogicalContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !(_la==T__12 || _la==T__13) ) {
-							((LogicalContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(45);
-						expression(6);
-						}
-						break;
-					}
-					} 
 				}
-				setState(50);
+				setState(76);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
+				_la = _input.LA(1);
 			}
 			}
 		}
@@ -625,7 +602,231 @@ public class TugaParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class MulDivModContext extends ParserRuleContext {
+		public List<UnaryContext> unary() {
+			return getRuleContexts(UnaryContext.class);
+		}
+		public UnaryContext unary(int i) {
+			return getRuleContext(UnaryContext.class,i);
+		}
+		public MulDivModContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_mulDivMod; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterMulDivMod(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitMulDivMod(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitMulDivMod(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final MulDivModContext mulDivMod() throws RecognitionException {
+		MulDivModContext _localctx = new MulDivModContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_mulDivMod);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(77);
+			unary();
+			setState(82);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 28672L) != 0)) {
+				{
+				{
+				setState(78);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 28672L) != 0)) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(79);
+				unary();
+				}
+				}
+				setState(84);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class UnaryContext extends ParserRuleContext {
+		public UnaryContext unary() {
+			return getRuleContext(UnaryContext.class,0);
+		}
+		public PrimaryContext primary() {
+			return getRuleContext(PrimaryContext.class,0);
+		}
+		public UnaryContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_unary; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterUnary(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitUnary(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitUnary(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final UnaryContext unary() throws RecognitionException {
+		UnaryContext _localctx = new UnaryContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_unary);
+		int _la;
+		try {
+			setState(88);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__10:
+			case T__14:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(85);
+				_la = _input.LA(1);
+				if ( !(_la==T__10 || _la==T__14) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(86);
+				unary();
+				}
+				break;
+			case T__15:
+			case T__17:
+			case T__18:
+			case INT:
+			case REAL:
+			case STRING:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(87);
+				primary();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class PrimaryContext extends ParserRuleContext {
+		public LiteralContext literal() {
+			return getRuleContext(LiteralContext.class,0);
+		}
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public PrimaryContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_primary; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).enterPrimary(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TugaListener ) ((TugaListener)listener).exitPrimary(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TugaVisitor ) return ((TugaVisitor<? extends T>)visitor).visitPrimary(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PrimaryContext primary() throws RecognitionException {
+		PrimaryContext _localctx = new PrimaryContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_primary);
+		try {
+			setState(95);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__17:
+			case T__18:
+			case INT:
+			case REAL:
+			case STRING:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(90);
+				literal();
+				}
+				break;
+			case T__15:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(91);
+				match(T__15);
+				setState(92);
+				expression();
+				setState(93);
+				match(T__16);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -733,16 +934,16 @@ public class TugaParser extends Parser {
 
 	public final LiteralContext literal() throws RecognitionException {
 		LiteralContext _localctx = new LiteralContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_literal);
+		enterRule(_localctx, 22, RULE_literal);
 		try {
-			setState(56);
+			setState(102);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INT:
 				_localctx = new IntLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(51);
+				setState(97);
 				match(INT);
 				}
 				break;
@@ -750,7 +951,7 @@ public class TugaParser extends Parser {
 				_localctx = new RealLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(52);
+				setState(98);
 				match(REAL);
 				}
 				break;
@@ -758,7 +959,7 @@ public class TugaParser extends Parser {
 				_localctx = new StringLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(53);
+				setState(99);
 				match(STRING);
 				}
 				break;
@@ -766,7 +967,7 @@ public class TugaParser extends Parser {
 				_localctx = new TrueLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(54);
+				setState(100);
 				match(T__17);
 				}
 				break;
@@ -774,7 +975,7 @@ public class TugaParser extends Parser {
 				_localctx = new FalseLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(55);
+				setState(101);
 				match(T__18);
 				}
 				break;
@@ -793,71 +994,66 @@ public class TugaParser extends Parser {
 		return _localctx;
 	}
 
-	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
-		switch (ruleIndex) {
-		case 2:
-			return expression_sempred((ExpressionContext)_localctx, predIndex);
-		}
-		return true;
-	}
-	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 0:
-			return precpred(_ctx, 9);
-		case 1:
-			return precpred(_ctx, 8);
-		case 2:
-			return precpred(_ctx, 7);
-		case 3:
-			return precpred(_ctx, 6);
-		case 4:
-			return precpred(_ctx, 5);
-		}
-		return true;
-	}
-
 	public static final String _serializedATN =
-		"\u0004\u0001\u001a;\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
-		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0001\u0000\u0004\u0000\n\b"+
-		"\u0000\u000b\u0000\f\u0000\u000b\u0001\u0000\u0001\u0000\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0003\u0002\u001e\b\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0005"+
-		"\u0002/\b\u0002\n\u0002\f\u00022\t\u0002\u0001\u0003\u0001\u0003\u0001"+
-		"\u0003\u0001\u0003\u0001\u0003\u0003\u00039\b\u0003\u0001\u0003\u0000"+
-		"\u0001\u0004\u0004\u0000\u0002\u0004\u0006\u0000\u0005\u0001\u0000\u0002"+
-		"\u0004\u0001\u0000\u0005\u0006\u0001\u0000\u0007\n\u0001\u0000\u000b\f"+
-		"\u0001\u0000\r\u000eC\u0000\t\u0001\u0000\u0000\u0000\u0002\u000f\u0001"+
-		"\u0000\u0000\u0000\u0004\u001d\u0001\u0000\u0000\u0000\u00068\u0001\u0000"+
-		"\u0000\u0000\b\n\u0003\u0002\u0001\u0000\t\b\u0001\u0000\u0000\u0000\n"+
-		"\u000b\u0001\u0000\u0000\u0000\u000b\t\u0001\u0000\u0000\u0000\u000b\f"+
-		"\u0001\u0000\u0000\u0000\f\r\u0001\u0000\u0000\u0000\r\u000e\u0005\u0000"+
-		"\u0000\u0001\u000e\u0001\u0001\u0000\u0000\u0000\u000f\u0010\u0005\u0014"+
-		"\u0000\u0000\u0010\u0011\u0003\u0004\u0002\u0000\u0011\u0012\u0005\u0001"+
-		"\u0000\u0000\u0012\u0003\u0001\u0000\u0000\u0000\u0013\u0014\u0006\u0002"+
-		"\uffff\uffff\u0000\u0014\u0015\u0005\u0006\u0000\u0000\u0015\u001e\u0003"+
-		"\u0004\u0002\u0004\u0016\u0017\u0005\u000f\u0000\u0000\u0017\u001e\u0003"+
-		"\u0004\u0002\u0003\u0018\u0019\u0005\u0010\u0000\u0000\u0019\u001a\u0003"+
-		"\u0004\u0002\u0000\u001a\u001b\u0005\u0011\u0000\u0000\u001b\u001e\u0001"+
-		"\u0000\u0000\u0000\u001c\u001e\u0003\u0006\u0003\u0000\u001d\u0013\u0001"+
-		"\u0000\u0000\u0000\u001d\u0016\u0001\u0000\u0000\u0000\u001d\u0018\u0001"+
-		"\u0000\u0000\u0000\u001d\u001c\u0001\u0000\u0000\u0000\u001e0\u0001\u0000"+
-		"\u0000\u0000\u001f \n\t\u0000\u0000 !\u0007\u0000\u0000\u0000!/\u0003"+
-		"\u0004\u0002\n\"#\n\b\u0000\u0000#$\u0007\u0001\u0000\u0000$/\u0003\u0004"+
-		"\u0002\t%&\n\u0007\u0000\u0000&\'\u0007\u0002\u0000\u0000\'/\u0003\u0004"+
-		"\u0002\b()\n\u0006\u0000\u0000)*\u0007\u0003\u0000\u0000*/\u0003\u0004"+
-		"\u0002\u0007+,\n\u0005\u0000\u0000,-\u0007\u0004\u0000\u0000-/\u0003\u0004"+
-		"\u0002\u0006.\u001f\u0001\u0000\u0000\u0000.\"\u0001\u0000\u0000\u0000"+
-		".%\u0001\u0000\u0000\u0000.(\u0001\u0000\u0000\u0000.+\u0001\u0000\u0000"+
-		"\u0000/2\u0001\u0000\u0000\u00000.\u0001\u0000\u0000\u000001\u0001\u0000"+
-		"\u0000\u00001\u0005\u0001\u0000\u0000\u000020\u0001\u0000\u0000\u0000"+
-		"39\u0005\u0015\u0000\u000049\u0005\u0016\u0000\u000059\u0005\u0017\u0000"+
-		"\u000069\u0005\u0012\u0000\u000079\u0005\u0013\u0000\u000083\u0001\u0000"+
-		"\u0000\u000084\u0001\u0000\u0000\u000085\u0001\u0000\u0000\u000086\u0001"+
-		"\u0000\u0000\u000087\u0001\u0000\u0000\u00009\u0007\u0001\u0000\u0000"+
-		"\u0000\u0005\u000b\u001d.08";
+		"\u0004\u0001\u001ai\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
+		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
+		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0001"+
+		"\u0000\u0004\u0000\u001a\b\u0000\u000b\u0000\f\u0000\u001b\u0001\u0000"+
+		"\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0002"+
+		"\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0005\u0003)\b\u0003"+
+		"\n\u0003\f\u0003,\t\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0005\u0004"+
+		"1\b\u0004\n\u0004\f\u00044\t\u0004\u0001\u0005\u0001\u0005\u0001\u0005"+
+		"\u0005\u00059\b\u0005\n\u0005\f\u0005<\t\u0005\u0001\u0006\u0001\u0006"+
+		"\u0001\u0006\u0005\u0006A\b\u0006\n\u0006\f\u0006D\t\u0006\u0001\u0007"+
+		"\u0001\u0007\u0001\u0007\u0005\u0007I\b\u0007\n\u0007\f\u0007L\t\u0007"+
+		"\u0001\b\u0001\b\u0001\b\u0005\bQ\b\b\n\b\f\bT\t\b\u0001\t\u0001\t\u0001"+
+		"\t\u0003\tY\b\t\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0003\n`\b\n\u0001"+
+		"\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0003\u000bg\b"+
+		"\u000b\u0001\u000b\u0000\u0000\f\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010"+
+		"\u0012\u0014\u0016\u0000\u0005\u0001\u0000\u0004\u0005\u0001\u0000\u0006"+
+		"\t\u0001\u0000\n\u000b\u0001\u0000\f\u000e\u0002\u0000\u000b\u000b\u000f"+
+		"\u000fi\u0000\u0019\u0001\u0000\u0000\u0000\u0002\u001f\u0001\u0000\u0000"+
+		"\u0000\u0004#\u0001\u0000\u0000\u0000\u0006%\u0001\u0000\u0000\u0000\b"+
+		"-\u0001\u0000\u0000\u0000\n5\u0001\u0000\u0000\u0000\f=\u0001\u0000\u0000"+
+		"\u0000\u000eE\u0001\u0000\u0000\u0000\u0010M\u0001\u0000\u0000\u0000\u0012"+
+		"X\u0001\u0000\u0000\u0000\u0014_\u0001\u0000\u0000\u0000\u0016f\u0001"+
+		"\u0000\u0000\u0000\u0018\u001a\u0003\u0002\u0001\u0000\u0019\u0018\u0001"+
+		"\u0000\u0000\u0000\u001a\u001b\u0001\u0000\u0000\u0000\u001b\u0019\u0001"+
+		"\u0000\u0000\u0000\u001b\u001c\u0001\u0000\u0000\u0000\u001c\u001d\u0001"+
+		"\u0000\u0000\u0000\u001d\u001e\u0005\u0000\u0000\u0001\u001e\u0001\u0001"+
+		"\u0000\u0000\u0000\u001f \u0005\u0014\u0000\u0000 !\u0003\u0004\u0002"+
+		"\u0000!\"\u0005\u0001\u0000\u0000\"\u0003\u0001\u0000\u0000\u0000#$\u0003"+
+		"\u0006\u0003\u0000$\u0005\u0001\u0000\u0000\u0000%*\u0003\b\u0004\u0000"+
+		"&\'\u0005\u0002\u0000\u0000\')\u0003\b\u0004\u0000(&\u0001\u0000\u0000"+
+		"\u0000),\u0001\u0000\u0000\u0000*(\u0001\u0000\u0000\u0000*+\u0001\u0000"+
+		"\u0000\u0000+\u0007\u0001\u0000\u0000\u0000,*\u0001\u0000\u0000\u0000"+
+		"-2\u0003\n\u0005\u0000./\u0005\u0003\u0000\u0000/1\u0003\n\u0005\u0000"+
+		"0.\u0001\u0000\u0000\u000014\u0001\u0000\u0000\u000020\u0001\u0000\u0000"+
+		"\u000023\u0001\u0000\u0000\u00003\t\u0001\u0000\u0000\u000042\u0001\u0000"+
+		"\u0000\u00005:\u0003\f\u0006\u000067\u0007\u0000\u0000\u000079\u0003\f"+
+		"\u0006\u000086\u0001\u0000\u0000\u00009<\u0001\u0000\u0000\u0000:8\u0001"+
+		"\u0000\u0000\u0000:;\u0001\u0000\u0000\u0000;\u000b\u0001\u0000\u0000"+
+		"\u0000<:\u0001\u0000\u0000\u0000=B\u0003\u000e\u0007\u0000>?\u0007\u0001"+
+		"\u0000\u0000?A\u0003\u000e\u0007\u0000@>\u0001\u0000\u0000\u0000AD\u0001"+
+		"\u0000\u0000\u0000B@\u0001\u0000\u0000\u0000BC\u0001\u0000\u0000\u0000"+
+		"C\r\u0001\u0000\u0000\u0000DB\u0001\u0000\u0000\u0000EJ\u0003\u0010\b"+
+		"\u0000FG\u0007\u0002\u0000\u0000GI\u0003\u0010\b\u0000HF\u0001\u0000\u0000"+
+		"\u0000IL\u0001\u0000\u0000\u0000JH\u0001\u0000\u0000\u0000JK\u0001\u0000"+
+		"\u0000\u0000K\u000f\u0001\u0000\u0000\u0000LJ\u0001\u0000\u0000\u0000"+
+		"MR\u0003\u0012\t\u0000NO\u0007\u0003\u0000\u0000OQ\u0003\u0012\t\u0000"+
+		"PN\u0001\u0000\u0000\u0000QT\u0001\u0000\u0000\u0000RP\u0001\u0000\u0000"+
+		"\u0000RS\u0001\u0000\u0000\u0000S\u0011\u0001\u0000\u0000\u0000TR\u0001"+
+		"\u0000\u0000\u0000UV\u0007\u0004\u0000\u0000VY\u0003\u0012\t\u0000WY\u0003"+
+		"\u0014\n\u0000XU\u0001\u0000\u0000\u0000XW\u0001\u0000\u0000\u0000Y\u0013"+
+		"\u0001\u0000\u0000\u0000Z`\u0003\u0016\u000b\u0000[\\\u0005\u0010\u0000"+
+		"\u0000\\]\u0003\u0004\u0002\u0000]^\u0005\u0011\u0000\u0000^`\u0001\u0000"+
+		"\u0000\u0000_Z\u0001\u0000\u0000\u0000_[\u0001\u0000\u0000\u0000`\u0015"+
+		"\u0001\u0000\u0000\u0000ag\u0005\u0015\u0000\u0000bg\u0005\u0016\u0000"+
+		"\u0000cg\u0005\u0017\u0000\u0000dg\u0005\u0012\u0000\u0000eg\u0005\u0013"+
+		"\u0000\u0000fa\u0001\u0000\u0000\u0000fb\u0001\u0000\u0000\u0000fc\u0001"+
+		"\u0000\u0000\u0000fd\u0001\u0000\u0000\u0000fe\u0001\u0000\u0000\u0000"+
+		"g\u0017\u0001\u0000\u0000\u0000\n\u001b*2:BJRX_f";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

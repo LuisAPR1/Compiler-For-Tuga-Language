@@ -1,4 +1,5 @@
-package src;// Generated from C:/Users/Luisr/Documents/Univ_Prog/COMP_2425/Compiladores/TUGAPROJECT/src/Tuga.g4 by ANTLR 4.13.2
+// Generated from C:/Users/Luisr/Documents/Univ_Prog/COMP_2425/Compiladores/ORIGINAL_TUGAPROJECT/src/Tuga.g4 by ANTLR 4.13.2
+package src;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -22,68 +23,59 @@ public interface TugaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstruction(TugaParser.InstructionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Not}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Visit a parse tree produced by {@link TugaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNot(TugaParser.NotContext ctx);
+	T visitExpression(TugaParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code MulDivMod}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Visit a parse tree produced by {@link TugaParser#orExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMulDivMod(TugaParser.MulDivModContext ctx);
+	T visitOrExpr(TugaParser.OrExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code AddSub}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Visit a parse tree produced by {@link TugaParser#andExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAndExpr(TugaParser.AndExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TugaParser#equalityExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqualityExpr(TugaParser.EqualityExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TugaParser#relationalExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelationalExpr(TugaParser.RelationalExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TugaParser#addSub}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAddSub(TugaParser.AddSubContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Parens}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Visit a parse tree produced by {@link TugaParser#mulDivMod}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParens(TugaParser.ParensContext ctx);
+	T visitMulDivMod(TugaParser.MulDivModContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Relational}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Visit a parse tree produced by {@link TugaParser#unary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRelational(TugaParser.RelationalContext ctx);
+	T visitUnary(TugaParser.UnaryContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code LiteralExpr}
-	 * labeled alternative in {@link TugaParser#expression}.
+	 * Visit a parse tree produced by {@link TugaParser#primary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLiteralExpr(TugaParser.LiteralExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Logical}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLogical(TugaParser.LogicalContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Negate}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNegate(TugaParser.NegateContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Equality}
-	 * labeled alternative in {@link TugaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEquality(TugaParser.EqualityContext ctx);
+	T visitPrimary(TugaParser.PrimaryContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IntLiteral}
 	 * labeled alternative in {@link TugaParser#literal}.

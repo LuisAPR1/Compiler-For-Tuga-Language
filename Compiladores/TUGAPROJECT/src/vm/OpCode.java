@@ -53,7 +53,6 @@ public enum OpCode {
     beq(0),
     bneq(0),
     btos(0),
-
     // Other
     halt(0);
 

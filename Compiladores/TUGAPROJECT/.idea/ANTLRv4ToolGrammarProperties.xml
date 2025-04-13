@@ -29,7 +29,7 @@
           <option name="outputDir" value="C:\Users\Luisr\Documents\Univ_Prog\COMP_2425\Compiladores\TUGAPROJECT\src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
-          <option name="pkg" value="" />
+          <option name="pkg" value="src" />
           <option name="language" value="" />
           <option name="generateVisitor" value="true" />
         </PerGrammarGenerationSettings>

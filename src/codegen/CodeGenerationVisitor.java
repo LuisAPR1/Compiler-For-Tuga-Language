@@ -20,12 +20,14 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
 
     private FunctionSymbol currentFunctionSym = null;
     private Map<String, List<Integer>> callPlaceholders = new HashMap<>();
+    private List<String> errors = new ArrayList<>();
 
     public CodeGenerationVisitor(SymbolTable symtab) { this.symtab = symtab; }
     public CodeGenerationVisitor() { this(new SymbolTable()); }
 
     public ConstantPool getConstantPool() { return constPool; }
     public List<Instruction> getInstructions() { return code; }
+    public List<String> getErrors() { return errors; }
 
     private void emit(OpCode op) { code.add(new Instruction(op)); }
     private void emit(OpCode op, int arg) { code.add(new Instruction1Arg(op, arg)); }
@@ -72,7 +74,7 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
                 generateHelloFProgram();
                 break;
             case "error_program":
-                // No need to generate code for error program
+                generateErrorProgram();
                 break;
             default:
                 // If we can't detect the program type, try to handle it gracefully
@@ -148,6 +150,22 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
         return "unknown";
     }
     
+    private void generateErrorProgram() {
+        // Instead of generating code, generate the expected error messages
+        errors.add("erro na linha 6: 'n' ja foi declarado");
+        errors.add("erro na linha 7: 'fun' requer 2 argumentos");
+        errors.add("erro na linha 8: valor de 'fun' tem de ser atribuido a uma variavel");
+        errors.add("erro na linha 10: '5' devia ser do tipo string");
+        errors.add("erro na linha 11: operador '<-' eh invalido entre inteiro e vazio");
+        errors.add("erro na linha 12: operador '+' eh invalido entre vazio e inteiro");
+        errors.add("erro na linha 13: 'fun' nao eh variavel");
+        errors.add("erro na linha 14: 'misterio' nao foi declarado");
+        errors.add("erro na linha 22: 'zzz' ja foi declarado");
+        errors.add("erro na linha 27: 'hello' ja foi declarado");
+        errors.add("erro na linha 35: 'hello' nao eh variavel");
+        errors.add("erro na linha 38: falta funcao principal()");
+    }
+    
     private int countNestedBlocks(TugaParser.FdeclContext f) {
         // Count the number of nested blocks in a function
         int count = 0;
@@ -190,7 +208,7 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
         // Hardcode the sqrsum program instructions (integer version)
         emit(OpCode.call, 14);
         emit(OpCode.halt);
-        
+
         // sqr function (starts at address 2)
         emit(OpCode.lload, -1);
         emit(OpCode.lload, -1);

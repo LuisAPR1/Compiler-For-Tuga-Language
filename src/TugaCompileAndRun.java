@@ -120,9 +120,17 @@ public class TugaCompileAndRun {
                 return;
             }
 
-            // 4. Geração de código (mantém igual ao teu original)
+            // 4. Geração de código
             CodeGenerationVisitor cg = new CodeGenerationVisitor(def.symtab);
             cg.visit(tree);
+            
+            // Check if the code generation visitor found any errors
+            if (!cg.getErrors().isEmpty()) {
+                for (String err : cg.getErrors()) {
+                    System.out.println(err);
+                }
+                return;
+            }
 
             // 5. Escrita dos bytecodes em ficheiro
             ConstantPool cp = cg.getConstantPool();

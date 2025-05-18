@@ -1,0 +1,10 @@
+funcao principal()
+inicio
+escreve fact(3);
+fim
+
+funcao fact(n: inteiro): inteiro
+inicio
+se (n igual 0) retorna 1;
+retorna n * fact(n-1);
+fim

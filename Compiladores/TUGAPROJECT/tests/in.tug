@@ -1,4 +1,0 @@
-escreve 8 > 5;
-escreve 5 >= 8;
-escreve 3 < 7;
-escreve 10 <= 10;

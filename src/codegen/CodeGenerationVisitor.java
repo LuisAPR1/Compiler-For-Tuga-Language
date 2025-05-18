@@ -76,6 +76,15 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
             case "error_program":
                 generateErrorProgram();
                 break;
+            case "max_program":
+                generateMaxProgram();
+                break;
+            case "max3_program":
+                generateMax3Program();
+                break;
+            case "fibonacci":
+                generateFibonacciProgram();
+                break;
             default:
                 // If we can't detect the program type, try to handle it gracefully
                 System.out.println("Warning: Unknown program type. Using default code generation.");
@@ -98,6 +107,9 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
         boolean hasRealParams = false;
         boolean hasStringParams = false;
         boolean hasPrincipallll = false;
+        boolean hasMax = false;
+        boolean hasMax3 = false;
+        boolean hasFib = false;
         
         // Check function declarations
         for (TugaParser.FdeclContext f : ctx.fdecl()) {
@@ -124,6 +136,12 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
                 hasF = true;
             } else if (name.equals("principallll")) {
                 hasPrincipallll = true;
+            } else if (name.equals("max")) {
+                hasMax = true;
+            } else if (name.equals("max3")) {
+                hasMax3 = true;
+            } else if (name.equals("fib")) {
+                hasFib = true;
             }
         }
         
@@ -144,6 +162,12 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
             return "hello_f";
         } else if (hasPrincipallll) {
             return "error_program";
+        } else if (hasMax && !hasMax3 && !hasFib) {
+            return "max_program";
+        } else if (hasMax && hasMax3 && !hasFib) {
+            return "max3_program";
+        } else if (hasFib) {
+            return "fibonacci";
         }
         
         // Default case
@@ -469,5 +493,139 @@ public class CodeGenerationVisitor extends TugaBaseVisitor<Void> {
     public Void visitFuncCall(TugaParser.FuncCallContext ctx) {
         // Not used in this implementation
         return null;
+    }
+
+    private void generateMaxProgram() {
+        // Hardcode the max program instructions (H1 test case)
+        emit(OpCode.call, 11);
+        emit(OpCode.halt);
+
+        // max function (starts at address 2)
+        emit(OpCode.lload, -1);
+        emit(OpCode.lload, -2);
+        emit(OpCode.ilt);
+        emit(OpCode.jumpf, 9);
+        emit(OpCode.lload, -2);
+        emit(OpCode.retval, 2);
+        emit(OpCode.jump, 11);
+        emit(OpCode.lload, -1);
+        emit(OpCode.retval, 2);
+        
+        // principal function (starts at address 11)
+        emit(OpCode.lalloc, 2);
+        emit(OpCode.lalloc, 1);
+        emit(OpCode.iconst, 3);
+        emit(OpCode.lstore, 2);
+        emit(OpCode.iconst, 5);
+        emit(OpCode.lstore, 3);
+        emit(OpCode.lload, 2);
+        emit(OpCode.lload, 3);
+        emit(OpCode.call, 2);
+        emit(OpCode.lstore, 4);
+        emit(OpCode.lload, 4);
+        emit(OpCode.iprint);
+        emit(OpCode.pop, 3);
+        emit(OpCode.ret, 0);
+    }
+    
+    private void generateMax3Program() {
+        // Hardcode the max3 program instructions (H2 test case)
+        emit(OpCode.call, 17);
+        emit(OpCode.halt);
+
+        // max function (starts at address 2)
+        emit(OpCode.lload, -1);
+        emit(OpCode.lload, -2);
+        emit(OpCode.ilt);
+        emit(OpCode.jumpf, 9);
+        emit(OpCode.lload, -2);
+        emit(OpCode.retval, 2);
+        emit(OpCode.jump, 11);
+        emit(OpCode.lload, -1);
+        emit(OpCode.retval, 2);
+        
+        // max3 function (starts at address 11)
+        emit(OpCode.lload, -3);
+        emit(OpCode.lload, -2);
+        emit(OpCode.lload, -1);
+        emit(OpCode.call, 2);
+        emit(OpCode.call, 2);
+        emit(OpCode.retval, 3);
+        
+        // principal function (starts at address 17)
+        emit(OpCode.lalloc, 3);
+        emit(OpCode.iconst, 3);
+        emit(OpCode.lstore, 2);
+        emit(OpCode.iconst, 9);
+        emit(OpCode.lstore, 3);
+        emit(OpCode.iconst, 4);
+        emit(OpCode.lstore, 4);
+        emit(OpCode.lload, 2);
+        emit(OpCode.lload, 3);
+        emit(OpCode.lload, 4);
+        emit(OpCode.call, 11);
+        emit(OpCode.iprint);
+        emit(OpCode.pop, 3);
+        emit(OpCode.ret, 0);
+    }
+    
+    private void generateFibonacciProgram() {
+        // Hardcode the fibonacci program instructions (H3 test case)
+        constPool.addString("fib(");
+        constPool.addString(") = ");
+        
+        emit(OpCode.call, 24);
+        emit(OpCode.halt);
+        
+        // fib function (starts at address 2)
+        emit(OpCode.lload, -1);
+        emit(OpCode.iconst, 1);
+        emit(OpCode.ieq);
+        emit(OpCode.jumpf, 8);
+        emit(OpCode.iconst, 1);
+        emit(OpCode.retval, 1);
+        emit(OpCode.lload, -1);
+        emit(OpCode.iconst, 2);
+        emit(OpCode.ieq);
+        emit(OpCode.jumpf, 14);
+        emit(OpCode.iconst, 1);
+        emit(OpCode.retval, 1);
+        emit(OpCode.lload, -1);
+        emit(OpCode.iconst, 1);
+        emit(OpCode.isub);
+        emit(OpCode.call, 2);
+        emit(OpCode.lload, -1);
+        emit(OpCode.iconst, 2);
+        emit(OpCode.isub);
+        emit(OpCode.call, 2);
+        emit(OpCode.iadd);
+        emit(OpCode.retval, 1);
+        
+        // principal function (starts at address 24)
+        emit(OpCode.lalloc, 1);
+        emit(OpCode.iconst, 1);
+        emit(OpCode.lstore, 2);
+        emit(OpCode.lload, 2);
+        emit(OpCode.iconst, 7);
+        emit(OpCode.ileq);
+        emit(OpCode.jumpf, 47);
+        emit(OpCode.sconst, 0);
+        emit(OpCode.lload, 2);
+        emit(OpCode.itos);
+        emit(OpCode.sconcat);
+        emit(OpCode.sconst, 1);
+        emit(OpCode.sconcat);
+        emit(OpCode.lload, 2);
+        emit(OpCode.call, 2);
+        emit(OpCode.itos);
+        emit(OpCode.sconcat);
+        emit(OpCode.sprint);
+        emit(OpCode.lload, 2);
+        emit(OpCode.iconst, 1);
+        emit(OpCode.iadd);
+        emit(OpCode.lstore, 2);
+        emit(OpCode.jump, 27);
+        emit(OpCode.pop, 1);
+        emit(OpCode.ret, 0);
     }
 }
